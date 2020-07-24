@@ -11,7 +11,7 @@ import { parseUserId } from '../auth/utils'
 
 const dataAccess = new DataAccess();
 
-export async function getTodos(jwtToken: string): Promise<TodoItem[]> {
+export async function getTodos(jwtToken) {
     const userId = parseUserId(jwtToken);
     return dataAccess.getTodoItems(userId);
 }

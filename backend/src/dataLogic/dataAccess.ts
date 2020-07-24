@@ -23,9 +23,9 @@ export class DataAccess {
       private readonly todosTable = process.env.TODOS_TABLE,
     ) { }
 
-async getTodoItems (userId: string): Promise<TodoItem[]>{
+async getTodoItems(userId) {
     console.log('Get all todos')
-    const result = await this.docClient. query({
+    const result  = await this.docClient. query({
         TableName: this.todosTable,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
@@ -34,12 +34,13 @@ async getTodoItems (userId: string): Promise<TodoItem[]>{
     })
     .promise();
 
-   const item = result.Items
+   /*const item = result.Items*/
     /*return result.Items as TodoItem[]*/
-   return item as TodoItem[];
+   /*return item as TodoItem[];*/
+   return result.Items
 }
 
-async get(todoId: string, userId: string): Promise<TodoItem> {
+async get(todoId, userId){
     const result = await this.docClient
       .query({
         TableName: this.todosTable,
@@ -51,8 +52,9 @@ async get(todoId: string, userId: string): Promise<TodoItem> {
       })
       .promise();
 
-    const item = result.Items[0];
-    return item as TodoItem;
+    /*const item = result.Items[0];
+    return item as TodoItem;*/
+    return result.Items[0]
   }
 
 
