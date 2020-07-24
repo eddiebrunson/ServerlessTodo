@@ -65,7 +65,7 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-      - Effect: "Allow"
+      - Effect: Allow
         Action:
           - "cloudformation:DescribeStackResource"
         Resource: "*"
