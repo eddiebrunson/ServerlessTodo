@@ -56,11 +56,11 @@ export async function deleteTodo(
 
 export async function setTodoAttachmentUrl(
     todoId: string,
-    attachmentUrl: string,
+    /*attachmentUrl: string,*/
     jwtToken: string,
 ): Promise<void> {
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    dataAccess.setAttachmentUrl(todo.todoId, todo.userId, attachmentUrl);
+    dataAccess.setAttachmentUrl(todo.todoId);
 }

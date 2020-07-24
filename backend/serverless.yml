@@ -30,6 +30,10 @@ provider:
 
 # Custom Configuration
 custom: 
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: false
+
   documentation:
     api:
       info:
@@ -61,6 +65,10 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: "Allow"
+        Action:
+          - "cloudformation:DescribeStackResource"
+        Resource: "*"
 
   # TODO: Configure this function
   CreateTodo:
@@ -125,6 +133,7 @@ functions:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
       - http:
+          authorizer: Auth
           method: post
           path: todos/{todoId}/attachment
           cors: true

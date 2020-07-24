@@ -19,14 +19,13 @@ const s3bucket = new XAWS.S3(options);
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing GenerateUploadUrl', event)
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-  const todoId = event.pathParameters.todoId;
+  /*const todoId = event.pathParameters.todoId;*/
   const authorization = event.headers.Authorization;
   const split = authorization.split(' ');
   const jwtToken = split[1];
   const imgId =uuid.v4();
 
   setTodoAttachmentUrl( 
-    todoId,
     'https://${bucketName}.s3.amazonaws.com/${imgId',
     jwtToken,
   );
@@ -39,7 +38,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
 
   return {
-    statusCode: 201,
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
     body: JSON.stringify({
       uploadUrl,
     }),
