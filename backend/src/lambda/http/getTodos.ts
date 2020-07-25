@@ -12,6 +12,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing GetTodos Event: ', event)
   const jwtToken: string = getToken(event.headers.Authorization)
   const todoItems = await getTodos(jwtToken)
+  logger.info('Get todos successful')
   console.log(todoItems)
 
 
