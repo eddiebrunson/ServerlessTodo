@@ -5,6 +5,7 @@ import { createTodo } from '../../businessLogic/todos'
 
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { createLogger } from '../../utils/logger'
+import { getToken } from '../../helpers/authHelper'
 
 const logger = createLogger('createTodoHandler');
 
@@ -17,12 +18,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 console.log('Processing event: ', event)
 logger.info('Processing event: ', event)
 
-const authorization = event.headers.Authorization;
-const split = authorization.split(' ');
-const jwtToken = split[1]
+const jwtToken: string = getToken(event.headers.Authorization)
+  /*const todoItems = await createTodo(jwtToken)*/
+  
 
-
-const todoItem = await createTodo(newTodo, jwtToken)
+const todoItems = await createTodo(newTodo, jwtToken)
+console.log(todoItems)
 return {
   statusCode: 201,
   headers: {
@@ -30,7 +31,7 @@ return {
     'Access-Control-Allow-Credentials': true
   },
   body: JSON.stringify({
-    item: todoItem
+    items: todoItems
   })
 }
 }
