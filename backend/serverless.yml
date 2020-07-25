@@ -24,13 +24,11 @@ provider:
     lambda: true
     apiGateway: true
     iamRoleStatements:
-    - Effect: Allow 
+    - Effect: 'Allow' 
       Action: 
         - xray:PutTraceSegments
         - xray:PutTelemetryRecords
-      Resource:
-        - '*'
-    
+      Resource: '*'
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 

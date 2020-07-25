@@ -22,8 +22,8 @@ const jwtToken: string = getToken(event.headers.Authorization)
   /*const todoItems = await createTodo(jwtToken)*/
   
 
-const todoItems = await createTodo(newTodo, jwtToken)
-console.log(todoItems)
+const newItem = await createTodo(newTodo, jwtToken)
+console.log(newItem)
 return {
   statusCode: 201,
   headers: {
@@ -31,7 +31,7 @@ return {
     'Access-Control-Allow-Credentials': true
   },
   body: JSON.stringify({
-    items: todoItems
+    items: newItem
   })
 }
 }
