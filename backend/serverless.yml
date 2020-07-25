@@ -67,7 +67,7 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
-          - "cloudformation:DescribeStackResource"
+          - cloudformation:DescribeStackResource
         Resource: "*"
 
   # TODO: Configure this function
