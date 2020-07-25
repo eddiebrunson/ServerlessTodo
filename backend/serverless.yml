@@ -1,5 +1,4 @@
 org: findsweeddie 
-app: my-first-app
 
 service:
   name: serverless-todo-app
