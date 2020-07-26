@@ -19,6 +19,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const newItem = await createTodo(newTodo, jwtToken);
   return {
       statusCode: 201,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
       body: JSON.stringify({
           newItem,
       }),
