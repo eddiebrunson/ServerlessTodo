@@ -5,6 +5,7 @@ import * as AWSXRay from 'aws-xray-sdk';
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import * as AWS from 'aws-sdk';
+import { setTodoAttachmentUrl } from '../../businessLogic/todos'
 
 const logger = createLogger('generateUploadUrl')
 const XAWS = AWSXRay.captureAWS(AWS);
@@ -18,11 +19,20 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing GenerateUploadUrl', event)
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
   /*const todoId = event.pathParameters.todoId;*/
-  const imgId =uuid.v4();
+  
+  const todoId = event.pathParameters.todoId;
+  
+  const imgId = uuid.v4();
+  
 
 
 
-    const attachmentUrl = s3bucket.getSignedURL('putObject', {
+  setTodoAttachmentUrl(
+    todoId,
+    `https://${bucketName}.s3.amazonaws.com/${imgId}`,
+  );
+
+  const attachmentUrl = s3bucket.getSignedUrl('putObject', {
     Bucket: bucketName,
     Key: imgId,
     Expires: urlExpiration,
