@@ -15,14 +15,14 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   logger.info('Delete TODO by id',event);
 
-  await deleteTodo(todoId, jwtToken);
+ const deleteTodoData = await deleteTodo(todoId, jwtToken);
   return {
     statusCode: 204,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
-    body: 'Item deleted succesfully',  
+    body: JSON.stringify(deleteTodoData),
   };
 };
 
