@@ -16,6 +16,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Delete TODO by id',event);
 
  const deleteTodoData = await deleteTodo(todoId, jwtToken);
+ logger.info('Item deleted successfully')
   return {
     statusCode: 204,
     headers: {
