@@ -21,11 +21,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   
   const todoId = event.pathParameters.todoId;
   
-
-  
-
-
-
   setTodoAttachmentUrl(
     todoId,
     `https://${bucketName}.s3.amazonaws.com/${todoId}.png`,
@@ -41,7 +36,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
       attachmentUrl,
