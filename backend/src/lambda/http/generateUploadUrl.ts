@@ -1,6 +1,5 @@
 import 'source-map-support/register'
 import { createLogger } from '../../utils/logger'
-import { uuid } from 'uuid'
 import * as AWSXRay from 'aws-xray-sdk';
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
@@ -22,19 +21,19 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   
   const todoId = event.pathParameters.todoId;
   
-  const imgId = uuid.v4();
+
   
 
 
 
   setTodoAttachmentUrl(
     todoId,
-    `https://${bucketName}.s3.amazonaws.com/${imgId}`,
+    `https://${bucketName}.s3.amazonaws.com/${todoId}.png`,
   );
 
   const attachmentUrl = s3bucket.getSignedUrl('putObject', {
     Bucket: bucketName,
-    Key: imgId,
+    Key: `${todoId}.png`,
     Expires: urlExpiration,
   });
 
