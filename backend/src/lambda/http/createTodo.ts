@@ -15,8 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const authorization = event.headers.Authorization;
   const split = authorization.split(' ');
   const jwtToken = split[1];
-  const todoId = event.pathParameters!.todoId
-  logger.info('List todo item', todoId)
+  
   const newItem = await createTodo(newTodo, jwtToken);
   return {
       statusCode: 201,
