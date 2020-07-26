@@ -20,11 +20,11 @@ export async function createTodo(
     createTodoRequest: CreateTodoRequest,
     jwtToken: string,
 ): Promise<TodoItem> {
-    const itemId = uuid.v4();
+    const todoId = uuid.v4();
     const userId = parseUserId(jwtToken);
 
     return dataAccess.createTodo({
-        todoId: itemId,
+        todoId: todoId,
         userId: userId,
         name: createTodoRequest.name,
         dueDate: createTodoRequest.dueDate,
