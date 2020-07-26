@@ -110,7 +110,7 @@ async setAttachmentUrl(
   }
   */
 
- async setAttachmentUrl(todoId: string): Promise<string> {
+async setTodoAttachmentUrl(todoId: string): Promise<string> {
   logger.info('Generating upload Url')
 
   return this.s3.getSignedUrl('putObject', {

@@ -54,7 +54,7 @@ export async function deleteTodo(
     await dataAccess.deleteTodo(todo.todoId, todo.userId);
 }
 
-export async function setTodoAttachmentUrl(
+export async function getUploadUrl(
     todoId: string,
     /*attachmentUrl: string,*/
     jwtToken: string,
@@ -62,5 +62,5 @@ export async function setTodoAttachmentUrl(
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    dataAccess.setAttachmentUrl(todo.todoId);
+    dataAccess.setTodoAttachmentUrl(todo.todoId);
 }

@@ -2,8 +2,6 @@ import 'source-map-support/register'
 import { createLogger } from '../../utils/logger'
 import { uuid } from 'uuid'
 import * as AWSXRay from 'aws-xray-sdk';
-import { setTodoAttachmentUrl } from '../../businessLogic/todos'
-
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import * as AWS from 'aws-sdk';
@@ -20,22 +18,15 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing GenerateUploadUrl', event)
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
   /*const todoId = event.pathParameters.todoId;*/
-  const authorization = event.headers.Authorization;
-  const split = authorization.split(' ');
-  const jwtToken = split[1];
   const imgId =uuid.v4();
 
-  setTodoAttachmentUrl( 
-    'https://${bucketName}.s3.amazonaws.com/${imgId',
-    jwtToken,
-  );
 
-  const uploadUrl = s3bucket.getSignedURL('putObject', {
+
+    const attachmentUrl = s3bucket.getSignedURL('putObject', {
     Bucket: bucketName,
     Key: imgId,
     Expires: urlExpiration,
   });
-
 
   return {
     statusCode: 200,
@@ -44,7 +35,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      uploadUrl,
+      attachmentUrl,
     }),
   };
 };
