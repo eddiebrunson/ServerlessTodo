@@ -156,6 +156,7 @@ functions:
           method: post
           path: todos/{todoId}/attachment
           cors: true
+            origin: '*'
           iamRoleStatementsName: GenerateUploadUrl-Role       
           iamRoleStatements:
             - Effect: Allow
