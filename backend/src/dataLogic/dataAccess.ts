@@ -15,7 +15,7 @@ export class DataAccess {
     constructor(
         /*This parameter works with DynamoDB*/
       /*private readonly documentClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),*/
-      private readonly docClient: DocumentClient = createDynamoDBClient(),
+      private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
       private readonly s3 = new XAWS.S3({ signatureVersion: 'v4' }),
       private readonly bucketName = process.env.S3_BUCKET,
       private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,
@@ -121,8 +121,8 @@ async setTodoAttachmentUrl(todoId: string): Promise<string> {
 }
 
 
-async deleteTodo(todoId: string, userId): Promise<void> {
-    this.docClient.delete({
+async deleteTodo(todoId: string, userId) {
+  const deleteTodo = await this.docClient.delete({
         TableName: this.todosTable,
         Key: {
             userId,
@@ -130,9 +130,11 @@ async deleteTodo(todoId: string, userId): Promise<void> {
           },
         })
         .promise();
+      return { Deleted: deleteTodo };
     }
 }
 
+/*
 const createDynamoDBClient = () => {
   if (process.env.IS_OFFLINE) {
     logger.info('Creating a local DynamoDB instance')
@@ -145,3 +147,4 @@ const createDynamoDBClient = () => {
 
   return new XAWS.DynamoDB.DocumentClient()
 }
+*/
