@@ -9,6 +9,7 @@ import * as uuid from 'uuid'
 import { parseUserId } from '../auth/utils'
 
 
+
 const dataAccess = new DataAccess();
 
 export async function getTodos(jwtToken) {
@@ -53,14 +54,24 @@ export async function deleteTodo(
 
     await dataAccess.deleteTodo(todo.todoId, todo.userId);
 }
-
+/*
 export async function setTodoAttachmentUrl(
     todoId: string,
-    /*attachmentUrl: string,*/
-    jwtToken: string,
+   /* attachmentUrl: string,*/  
+/*    jwtToken: string,
 ): Promise<void> {
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
     dataAccess.setTodoAttachmentUrl(todo.todoId);
 }
+*/
+
+export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
+    const userId = parseUserId(jwtToken)
+    console.log("Setting Item URL")
+    console.log(todoId)
+    console.log("userId:",userId)
+
+    return await dataAccess.setTodoAttachmentUrl(todoId);
+    }
