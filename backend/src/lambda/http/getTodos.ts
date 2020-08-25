@@ -1,6 +1,8 @@
 import 'source-map-support/register'
 import { getTodos } from '../../businessLogic/todos'
 import { createLogger } from '../../utils/logger'
+/*import { getToken } from '../../auth/utils'*/
+import { getToken } from '../../helpers/authHelper'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
@@ -8,8 +10,9 @@ const logger = createLogger('getTodos')
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   // TODO: Get all TODO items for a current user
   logger.info('Processing GetTodos Event: ', event)
-
-  const todoItems = await getTodos
+  const jwtToken: string = getToken(event.headers.Authorization)
+  const todoItems = await getTodos(jwtToken)
+  logger.info('Get todos successful')
   console.log(todoItems)
 
 
