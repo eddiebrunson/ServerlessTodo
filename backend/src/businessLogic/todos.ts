@@ -9,6 +9,7 @@ import * as uuid from 'uuid'
 import { parseUserId } from '../auth/utils'
 
 
+
 const dataAccess = new DataAccess();
 
 export async function getTodos(jwtToken) {
@@ -20,11 +21,11 @@ export async function createTodo(
     createTodoRequest: CreateTodoRequest,
     jwtToken: string,
 ): Promise<TodoItem> {
-    const itemId = uuid.v4();
+    const todoId = uuid.v4();
     const userId = parseUserId(jwtToken);
 
     return dataAccess.createTodo({
-        todoId: itemId,
+        todoId: todoId,
         userId: userId,
         name: createTodoRequest.name,
         dueDate: createTodoRequest.dueDate,
@@ -53,14 +54,31 @@ export async function deleteTodo(
 
     await dataAccess.deleteTodo(todo.todoId, todo.userId);
 }
-
+/*
 export async function setTodoAttachmentUrl(
     todoId: string,
-    attachmentUrl: string,
-    jwtToken: string,
+   /* attachmentUrl: string,*/  
+/*    jwtToken: string,
 ): Promise<void> {
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    dataAccess.setAttachmentUrl(todo.todoId, todo.userId, attachmentUrl);
+    dataAccess.setTodoAttachmentUrl(todo.todoId);
 }
+*/
+/*
+export async function get(todoId: string, jwtToken: string): Promise<TodoItem> {
+    const userId = parseUserId(jwtToken)
+    return await dataAccess.get(todoId, userId)
+    }
+    */
+
+export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
+    const userId = parseUserId(jwtToken)
+    console.log("Setting Item URL")
+    console.log(todoId)
+    console.log("userId:",userId)
+    const todoItem = await dataAccess.get(todoId, userId)
+
+    return await dataAccess.setTodoAttachmentUrl(todoId, userId, todoItem.createdAt);
+    }

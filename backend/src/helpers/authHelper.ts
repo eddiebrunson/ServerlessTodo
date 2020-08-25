@@ -9,7 +9,7 @@ export function getUserId(authHeader: string): string{
     return jwt.payload.sub
   }
   
-function getToken(authHeader: string): string {
+export function getToken(authHeader: string): string {
     if (!authHeader) throw new Error('Error no authentication header')
   
     if (!authHeader.toLowerCase().startsWith('bearer '))

@@ -6,6 +6,7 @@ import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { createLogger } from '../../utils/logger'
 /*import { getUserId } from '../../helpers/authHelper'*/
 import { updateTodo } from '../../businessLogic/todos'
+import { getToken } from '../../helpers/authHelper'
 
 
 
@@ -19,14 +20,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
 
   /*const authHeader = event.headers.Authorization*/
-  const authorization = event.headers.Authorization;
-  const split = authorization.split(' ');
-  const jwtToken = split[1]
+  const jwtToken: string = getToken(event.headers.Authorization)
 
   await updateTodo(todoId, updatedTodo, jwtToken);
 
   return {
     statusCode: 204,
-    body: 'update successfull',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: 'update successful',
 };
 }

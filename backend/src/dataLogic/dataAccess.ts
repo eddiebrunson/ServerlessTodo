@@ -1,21 +1,26 @@
 /*  */
 import * as AWS from 'aws-sdk';
 import * as AWSXRAY from 'aws-xray-sdk';
-/*import { DocumentClient } from 'aws-sdk/clients/dynamodb';*/
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import { TodoItem } from '../models/TodoItem';
 import { TodoUpdate } from '../models/TodoUpdate';
+import { createLogger } from '../utils/logger'
 
 /* Creates an instance of AWS Clients using XRay SDK */
 const XAWS = AWSXRAY.captureAWS(AWS);
+const logger = createLogger(XAWS)
 
 export class DataAccess {
     constructor(
         /*This parameter works with DynamoDB*/
-       /* private readonly documentClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),*/
-       private readonly docClient: AWS.DynamoDB.DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+      /*private readonly documentClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),*/
+      private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+      private readonly s3 = new XAWS.S3({ signatureVersion: 'v4' }),
+      private readonly bucketName = process.env.S3_BUCKET,
+      /*private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,*/
         /*This parameter is the name of the table where todos are stored*/
-        private readonly todosTable = process.env.TODOS_TABLE,
+      private readonly todosTable = process.env.TODOS_TABLE,
     ) { }
 
 async getTodoItems(userId) {
@@ -82,7 +87,7 @@ async updateTodo(todoId: string,
         },
     }).promise()
 }
-
+/*
 async setAttachmentUrl(
     todoId: string,
     userId: string,
@@ -103,9 +108,49 @@ async setAttachmentUrl(
       })
       .promise();
   }
+  */
 
-async deleteTodo(todoId: string, userId): Promise<void> {
-    this.docClient.delete({
+async setTodoAttachmentUrl(todoId: string, userId: string, createdAt: string): Promise<string> {
+  logger.info('Generating upload Url')
+  console.log('Generating upload Url')
+
+  /*return this.s3.getSignedUrl('putObject', {
+    Bucket: this.bucketName,
+    Key: todoId,
+    Expires: this.urlExpiration
+  })
+}*/
+
+/*const s3 = new XAWS.S3({
+  signatureVersion: 'v4'
+})*/
+
+const url = this.s3.getSignedUrl('putObject', {
+  Bucket: this.bucketName,
+  Key: todoId,
+  Expires: 1000,
+});
+console.log(url);
+
+await this.docClient.update({
+  TableName: this.todosTable,
+  Key: { 
+      "userId":userId, 
+      "createdAt": createdAt,
+  },
+  UpdateExpression: "set attachmentUrl=:URL",
+  ExpressionAttributeValues: {
+    ":URL": url.split("?")[0]
+  },
+  ReturnValues: "UPDATED_NEW"
+  })
+  .promise();
+return url;
+}
+
+
+async deleteTodo(todoId: string, userId) {
+  const deleteTodo = await this.docClient.delete({
         TableName: this.todosTable,
         Key: {
             userId,
@@ -113,6 +158,21 @@ async deleteTodo(todoId: string, userId): Promise<void> {
           },
         })
         .promise();
+      return { Deleted: deleteTodo };
     }
 }
 
+/*
+const createDynamoDBClient = () => {
+  if (process.env.IS_OFFLINE) {
+    logger.info('Creating a local DynamoDB instance')
+
+    return new XAWS.DynamoDB.DocumentClient({
+      region: 'localhost',
+      endpoint: 'http://localhost:8000'
+    })
+  }
+
+  return new XAWS.DynamoDB.DocumentClient()
+}
+*/
