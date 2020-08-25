@@ -1,5 +1,4 @@
 org: findsweeddie 
-app: my-first-app
 
 service:
   name: serverless-todo-app
@@ -11,6 +10,11 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-plugin-tracing 
 
+package:
+  exclude:
+    - .dynamodb/**
+    - node_modules/**
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -18,7 +22,12 @@ provider:
   tracing: 
     lambda: true
     apiGateway: true
-    
+    iamRoleStatements:
+    - Effect: 'Allow' 
+      Action: 
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: '*'
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
@@ -28,8 +37,34 @@ provider:
     SIGNED_URL_EXPIRATION: 300
     AUTH_0_SECRET: rb5xG5nHWUerVXgiuUjH105ZeW9OnPjAn7rO1VjXhDPbGKOgb3jyi-bTIqI0Ui87
 
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Scan
+      - dynamodb:PutItem
+      - dynamodb:GetItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+      - dynamodb:Query
+    Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+  - Effect: Allow
+    Action:
+      - s3:PutObject
+      - s3:GetObject
+    Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/* 
+  - Effect: "Allow" # xray permissions (required)
+    Action:
+      - "xray:PutTraceSegments"
+      - "xray:PutTelemetryRecords"
+    Resource:
+      - "*"
+
 # Custom Configuration
 custom: 
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: false
+
   documentation:
     api:
       info:
@@ -61,6 +96,15 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - cloudformation:DescribeStackResource
+        Resource: "*"
+      - Effect: "Allow"
+        Action:
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
+        Resource: "*"
 
   # TODO: Configure this function
   CreateTodo:
@@ -81,6 +125,11 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: "Allow"
+        Action:
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
+        Resource: "*"
 
   # TODO: Configure this function
   UpdateTodo:
@@ -100,6 +149,9 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
   # TODO: Configure this function
@@ -114,6 +166,8 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
+          - dynamodb:GetItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
@@ -125,24 +179,34 @@ functions:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
       - http:
+          authorizer: Auth
           method: post
           path: todos/{todoId}/attachment
-          cors: true
-          iamRoleStatementsName: GenerateUploadUrl-Role       
-          iamRoleStatements:
-            - Effect: Allow
-              Action:
-                - dynamodb:UpdateItem
-              Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-            - Effect: Allow
-              Action:
-                - dynamodb:Query
-              Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-            - Effect: Allow
-              Action:
-                - s3:PutObject
-              Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*  
-
+          cors: true     
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:GetItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+          - '*'
+        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*  
+      - Effect: "Allow" # xray permissions 
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
 resources:
   Resources:
     GatewayResponseDefault4XX:
@@ -151,7 +215,7 @@ resources:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST,PUT,PATCH'"
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
