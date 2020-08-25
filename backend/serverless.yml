@@ -37,6 +37,28 @@ provider:
     SIGNED_URL_EXPIRATION: 300
     AUTH_0_SECRET: rb5xG5nHWUerVXgiuUjH105ZeW9OnPjAn7rO1VjXhDPbGKOgb3jyi-bTIqI0Ui87
 
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Scan
+      - dynamodb:PutItem
+      - dynamodb:GetItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+      - dynamodb:Query
+    Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+  - Effect: Allow
+    Action:
+      - s3:PutObject
+      - s3:GetObject
+    Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/* 
+  - Effect: "Allow" # xray permissions (required)
+    Action:
+      - "xray:PutTraceSegments"
+      - "xray:PutTelemetryRecords"
+    Resource:
+      - "*"
+
 # Custom Configuration
 custom: 
   webpack:
