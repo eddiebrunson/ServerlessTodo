@@ -128,6 +128,8 @@ functions:
         Action:
           - dynamodb:UpdateItem
           - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
   # TODO: Configure this function
@@ -143,6 +145,7 @@ functions:
         Action:
           - dynamodb:DeleteItem
           - dynamodb:GetItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
@@ -164,6 +167,7 @@ functions:
               Action:
                 - dynamodb:UpdateItem
                 - dynamodb:GetItem
+                - dynamodb:Query
               Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
             - Effect: Allow
               Action:
