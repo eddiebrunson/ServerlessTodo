@@ -66,12 +66,19 @@ export async function setTodoAttachmentUrl(
     dataAccess.setTodoAttachmentUrl(todo.todoId);
 }
 */
+/*
+export async function get(todoId: string, jwtToken: string): Promise<TodoItem> {
+    const userId = parseUserId(jwtToken)
+    return await dataAccess.get(todoId, userId)
+    }
+    */
 
 export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken)
     console.log("Setting Item URL")
     console.log(todoId)
     console.log("userId:",userId)
+    const todoItem = await dataAccess.get(todoId, userId)
 
-    return await dataAccess.setTodoAttachmentUrl(todoId);
+    return await dataAccess.setTodoAttachmentUrl(todoId, userId, todoItem.createdAt);
     }
