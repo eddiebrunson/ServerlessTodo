@@ -182,8 +182,7 @@ functions:
           # authorizer: Auth
           method: post
           path: todos/{todoId}/attachment
-          cors: true
-          iamRoleStatementsName: GenerateUploadUrl-Role       
+          cors: true     
           iamRoleStatements:
             - Effect: Allow
               Action:
