@@ -26,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     `https://${bucketName}.s3.amazonaws.com/${todoId}.png`,
   );
 
-  const attachmentUrl = s3bucket.getSignedUrl('putObject', {
+  const url = s3bucket.getSignedUrl('putObject', {
     Bucket: bucketName,
     Key: `${todoId}.png`,
     Expires: urlExpiration,
@@ -36,9 +36,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      attachmentUrl,
+      url,
     }),
   };
 };
