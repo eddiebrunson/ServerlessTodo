@@ -83,7 +83,7 @@ async updateTodo(todoId: string,
     }).promise()
 }
 
-async setTodoAttachmentUrl(todoId: string, userId: string, createdAt: string): Promise<string> {
+async setTodoAttachmentUrl(todoId: string, userId: string): Promise<string> {
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
 
@@ -99,7 +99,7 @@ await this.docClient.update({
   TableName: this.todosTable,
   Key: { 
       "userId":userId, 
-      "createdAt": createdAt,
+      
   },
   UpdateExpression: "set attachmentUrl=:URL",
   ExpressionAttributeValues: {
