@@ -19,6 +19,7 @@ export class DataAccess {
       /*private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,*/
         /*This parameter is the name of the table where todos are stored*/
       private readonly todosTable = process.env.TODOS_TABLE,
+      private readonly bucketUrl = process.env.S3_BUCKET_URL
     ) { }
 
 async getTodoItems(userId) {
@@ -83,7 +84,7 @@ async updateTodo(todoId: string,
     }).promise()
 }
 
-async setTodoAttachmentUrl(todoId: string, userId: string): Promise<string> {
+async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
 
@@ -104,7 +105,7 @@ await this.docClient.update({
   },
   UpdateExpression: "set attachmentUrl=:URL",
   ExpressionAttributeValues: {
-    ":URL": url.split("?")[0]
+    ":URL": `${this.bucketUrl}${todoId}${imageExt}`
   },
   ReturnValues: "UPDATED_NEW"
   })
