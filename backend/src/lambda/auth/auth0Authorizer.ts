@@ -62,22 +62,17 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
-  if(!jwt){
-    throw new Error('invalid token')
+  const response = await Axios.get(jwksUrl);
+  const responseData = response.data;
+  const signingKey = responseData['keys'].find(key => key['kid'] === jwt['header']['kid']);
+  if (!signingKey) {
+    throw new Error('Invalid Signing key');
   }
-
-  try {
-    const response = await Axios.get(jwksUrl);
-    
-    var verifedToken = verify(token,response.data,{algorithms:['RS256']})
-
-   
-    return  verifedToken as JwtPayload
-  } catch (error) {
-    console.error(error);
-    return undefined
-  }
+  const { x5c } = signingKey;
+  const cert = `-----BEGIN CERTIFICATE-----\n${x5c[0]}\n-----END CERTIFICATE-----`;
+  return verify(token, cert, {algorithms: ['RS256']}) as JwtPayload
 }
+
 
 function getToken(authHeader: string): string {
   if (!authHeader) throw new Error('No authentication header')
