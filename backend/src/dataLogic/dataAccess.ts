@@ -112,12 +112,12 @@ return url;
 }
 
 
-async deleteTodo(todoId: string, userId) {
+async deleteTodo(todoId: string, userId: string) {
   const deleteTodo = await this.docClient.delete({
         TableName: this.todosTable,
         Key: {
-            userId,
-            todoId,
+            userId: userId,
+            todoId: todoId,
           },
         })
         .promise();
