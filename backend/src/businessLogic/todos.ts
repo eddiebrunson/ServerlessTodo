@@ -31,7 +31,6 @@ export async function createTodo(
         dueDate: createTodoRequest.dueDate,
         createdAt: new Date().toISOString(),
         done: false,
-        attachmentUrl: 'https://${bucketName}.s3.amazonaws.com/${todoId}.png'
     });
 }
 
