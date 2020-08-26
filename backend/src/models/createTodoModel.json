@@ -26,8 +26,6 @@
     "required": [
       "name",
       "dueDate",
-      "done",
-      "createdAt",
       "attachmentUrl"
     ],
     "additionalProperties": false
