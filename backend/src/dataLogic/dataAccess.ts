@@ -66,7 +66,7 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
 async updateTodo(todoId: string,
     todoUpdate: TodoUpdate,
 ): Promise<void> {
-    this.docClient.update({
+   await this.docClient.update({
         TableName: this.todosTable,
         Key: {
             ':todoId': todoId
