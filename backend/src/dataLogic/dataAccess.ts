@@ -98,7 +98,8 @@ console.log(url);
 await this.docClient.update({
   TableName: this.todosTable,
   Key: { 
-      "userId":userId, 
+      "userId":userId,
+      "todoId":todoId
       
   },
   UpdateExpression: "set attachmentUrl=:URL",
