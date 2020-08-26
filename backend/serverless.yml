@@ -250,7 +250,7 @@ resources:
           Id: MyPolicy
           Version: "2012-10-17"
           Statement:
-            - Sid: PublicReadWriteForGetBucketObjects
+            - Sid: PublicReadWriteBucketPolicy
               Effect: Allow
               Principal: '*'
               Action: 
