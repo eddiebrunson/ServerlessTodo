@@ -2,7 +2,6 @@
 import * as AWS from 'aws-sdk';
 import * as AWSXRAY from 'aws-xray-sdk';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-
 import { TodoItem } from '../models/TodoItem';
 import { TodoUpdate } from '../models/TodoUpdate';
 import { createLogger } from '../utils/logger'
@@ -14,7 +13,6 @@ const logger = createLogger(XAWS)
 export class DataAccess {
     constructor(
         /*This parameter works with DynamoDB*/
-      /*private readonly documentClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),*/
       private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
       private readonly s3 = new XAWS.S3({ signatureVersion: 'v4' }),
       private readonly bucketName = process.env.S3_BUCKET,
@@ -34,9 +32,7 @@ async getTodoItems(userId) {
     })
     .promise();
 
-   /*const item = result.Items*/
-    /*return result.Items as TodoItem[]*/
-   /*return item as TodoItem[];*/
+   
    return result.Items
 }
 
@@ -52,8 +48,7 @@ async get(todoId, userId){
       })
       .promise();
 
-    /*const item = result.Items[0];
-    return item as TodoItem;*/
+    
     return result.Items[0]
   }
 
@@ -87,44 +82,12 @@ async updateTodo(todoId: string,
         },
     }).promise()
 }
-/*
-async setAttachmentUrl(
-    todoId: string,
-    userId: string,
-    attachmentUrl: string,
-  ): Promise<void> {
-    this.docClient
-      .update({
-        TableName: this.todosTable,
-        Key: {
-          todoId,
-          userId,
-        },
-        UpdateExpression: 'set attachmentUrl = :attachmentUrl',
-        ExpressionAttributeValues: {
-          ':attachmentUrl': attachmentUrl,
-        },
-        ReturnValues: 'UPDATED_NEW',
-      })
-      .promise();
-  }
-  */
 
 async setTodoAttachmentUrl(todoId: string, userId: string, createdAt: string): Promise<string> {
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
 
-  /*return this.s3.getSignedUrl('putObject', {
-    Bucket: this.bucketName,
-    Key: todoId,
-    Expires: this.urlExpiration
-  })
-}*/
-
-/*const s3 = new XAWS.S3({
-  signatureVersion: 'v4'
-})*/
-
+  
 const url = this.s3.getSignedUrl('putObject', {
   Bucket: this.bucketName,
   Key: todoId,
@@ -162,17 +125,3 @@ async deleteTodo(todoId: string, userId) {
     }
 }
 
-/*
-const createDynamoDBClient = () => {
-  if (process.env.IS_OFFLINE) {
-    logger.info('Creating a local DynamoDB instance')
-
-    return new XAWS.DynamoDB.DocumentClient({
-      region: 'localhost',
-      endpoint: 'http://localhost:8000'
-    })
-  }
-
-  return new XAWS.DynamoDB.DocumentClient()
-}
-*/
