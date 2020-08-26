@@ -1,8 +1,8 @@
 import 'source-map-support/register'
 import { getTodos } from '../../businessLogic/todos'
 import { createLogger } from '../../utils/logger'
-import { getToken } from '../../auth/utils'
-/*import { getToken } from '../../helpers/authHelper'*/
+/*import { getToken } from '../../auth/utils'*/
+import { getToken } from '../../helpers/authHelper'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
