@@ -91,7 +91,7 @@ async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.
     const url = await this.s3.getSignedUrl('putObject', {
         Bucket: this.bucketName,
         Key: todoId,
-        Expires: 1000,
+        Expires: 10000,
     });
     console.log(url);
 
