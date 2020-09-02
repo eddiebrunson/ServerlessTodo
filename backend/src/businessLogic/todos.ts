@@ -31,6 +31,7 @@ export async function createTodo(
         dueDate: createTodoRequest.dueDate,
         createdAt: new Date().toISOString(),
         done: false,
+        attachmentUrl: ``,
     });
 }
 
