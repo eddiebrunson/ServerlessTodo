@@ -1,19 +1,25 @@
 import 'source-map-support/register'
 import { createLogger } from '../../utils/logger'
-/*import * as AWSXRay from 'aws-xray-sdk';*/
+import * as AWSXRay from 'aws-xray-sdk';
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 /*import * as AWS from 'aws-sdk';*/
-import { setTodoAttachmentUrl } from '../../businessLogic/todos'
+/*import { setTodoAttachmentUrl } from '../../businessLogic/todos'*/
+/*import { setTodoAttachmentUrl } from '../../dataLogic/dataAccess'*/
+import * as AWS from 'aws-sdk';
 
 const logger = createLogger('generateUploadUrl')
-/*const XAWS = AWSXRay.captureAWS(AWS);
+const XAWS = AWSXRay.captureAWS(AWS);
 const bucketName = process.env.S3_BUCKET
 const urlExpiration = parseInt(process.env.SIGNED_URL_EXPIRATION);
-let options: AWS.S3.Types.ClientConfiguration = { signatureVersion: 'v4', };
+/*let options: AWS.S3.Types.ClientConfiguration = { signatureVersion: 'v4', };*/
 
-const s3bucket = new XAWS.S3(options);
-*/
+/*const s3bucket = new XAWS.S3(options);*/
+
+const s3 = new XAWS.S3({
+  signatureVersion: 'v4'
+})
+
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing GenerateUploadUrl', event)
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
@@ -33,11 +39,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   });
   */
   const todoId = event.pathParameters.todoId
-  const authorization = event.headers.Authorization;
+  /*const authorization = event.headers.Authorization;
   const split = authorization.split(' ')
-  const jwtToken = split[1]
+  const jwtToken = split[1]*/
 
- const url = await setTodoAttachmentUrl(todoId,jwtToken)
+ const url = await getUploadUrl(todoId)
 
   return {
     statusCode: 200,
@@ -50,3 +56,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }),
   };
 };
+function getUploadUrl(todoId: string) {
+  return s3.getSignedUrl('putObject', {
+    Bucket: bucketName,
+    Key: todoId,
+    Expires: urlExpiration
+  })
+}
