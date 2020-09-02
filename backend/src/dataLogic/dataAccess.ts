@@ -110,7 +110,7 @@ await this.docClient.update({
   ReturnValues: "UPDATED_NEW"
   })
   .promise();
-return url;
+return url as string;
 }
 
 
