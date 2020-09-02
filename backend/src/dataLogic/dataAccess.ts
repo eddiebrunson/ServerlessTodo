@@ -88,7 +88,7 @@ async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
   
-    const url = this.s3.getSignedUrl('putObject', {
+    const url = await this.s3.getSignedUrl('putObject', {
         Bucket: this.bucketName,
         Key: todoId,
         Expires: 1000,
