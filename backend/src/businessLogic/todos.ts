@@ -11,7 +11,7 @@ import { parseUserId } from '../auth/utils'
 
 
 const dataAccess = new DataAccess();
-const bucketName = process.env.S3_BUCKET
+
 
 export async function getTodos(jwtToken) {
     const userId = parseUserId(jwtToken);
@@ -32,7 +32,7 @@ export async function createTodo(
         dueDate: createTodoRequest.dueDate,
         createdAt: new Date().toISOString(),
         done: false,
-        attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${todoId}`,
+        attachmentUrl: ``,
     });
 }
 
