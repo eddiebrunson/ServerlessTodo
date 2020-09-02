@@ -87,14 +87,13 @@ async updateTodo(todoId: string,
 async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
-
   
-const url = this.s3.getSignedUrl('putObject', {
-  Bucket: this.bucketName,
-  Key: todoId,
-  Expires: 1000,
-});
-console.log(url);
+    const url = this.s3.getSignedUrl('putObject', {
+        Bucket: this.bucketName,
+        Key: todoId,
+        Expires: 1000,
+    });
+    console.log(url);
 
 await this.docClient.update({
   TableName: this.todosTable,
@@ -110,7 +109,7 @@ await this.docClient.update({
   ReturnValues: "UPDATED_NEW"
   })
   .promise();
-return url as string;
+return url;
 }
 
 
