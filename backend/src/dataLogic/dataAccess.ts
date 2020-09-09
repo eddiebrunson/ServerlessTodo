@@ -81,10 +81,11 @@ async updateTodo(todoId: string,
         ExpressionAttributeNames: {
             '#n': 'name',
         },
+        
     }).promise()
 }
 
-async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
+async updateTodoUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
   
