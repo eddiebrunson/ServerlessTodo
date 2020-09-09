@@ -44,7 +44,7 @@ export async function updateTodo(
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    dataAccess.updateTodo(todo.todoId, updateTodoRequest);
+    return await dataAccess.updateTodo(todo.todoId, updateTodoRequest);
 }
 
 export async function deleteTodo(
@@ -75,12 +75,17 @@ export async function get(todoId: string, jwtToken: string): Promise<TodoItem> {
     }
     */
 
-export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
-    const userId = parseUserId(jwtToken)
+export async function updateTodoUrl(updateTodo, todoId: string, userId: string): Promise<string> {
+    /*const userId = parseUserId(jwtToken)*/
     console.log("Setting Item URL")
     console.log(todoId)
     console.log("userId:",userId)
     /*const todoItem = await dataAccess.get(todoId, userId)*/
 
-    return await dataAccess.setTodoAttachmentUrl(todoId, userId);
-    }
+    return await dataAccess.updateTodoUrl({
+        todoId, 
+        userId,
+        attachmentUrl: updateTodo.attachmentUrl,
+
+    })
+}
