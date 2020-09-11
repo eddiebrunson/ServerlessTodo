@@ -64,7 +64,7 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
        .promise()
     return todoItem
 }
-
+/*
 async updateTodo(todoId: string,
     todoUpdate: TodoUpdate,
 ): Promise<void> {
@@ -83,6 +83,27 @@ async updateTodo(todoId: string,
             '#n': 'name',
         },
     }).promise()
+}
+*/
+
+async updateTodo(todoUpdate: TodoUpdate): Promise<TodoItem> {
+  await this.docClient.update({
+      TableName: this.todosTable,
+      Key: { 
+          todoId: todoUpdate.todoId,
+          userId: todoUpdate.userId },
+      ExpressionAttributeNames: {"#N": "name"},
+      UpdateExpression: "set #N = :name, dueDate = :dueDate, done = :done",
+      ExpressionAttributeValues: {
+          ":name": todoUpdate.name,
+          ":dueDate": todoUpdate.dueDate,
+          ":done": todoUpdate.done,
+      },
+      ReturnValues: "UPDATED_NEW"
+  }).promise()
+    
+  return todoUpdate
+  
 }
 
 async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
