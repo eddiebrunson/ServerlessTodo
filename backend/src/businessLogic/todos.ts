@@ -40,11 +40,11 @@ export async function updateTodo(
     todoId: string,
     updateTodoRequest: UpdateTodoRequest,
     jwtToken: string,
-): Promise<void> {
+): Promise<TodoItem> {
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    dataAccess.updateTodo(todo.todoId, updateTodoRequest);
+    return dataAccess.updateTodo(todo.todoId, updateTodoRequest);
 }
 
 export async function deleteTodo(
