@@ -6,8 +6,9 @@ import { DataAccess } from '../dataLogic/dataAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import * as uuid from 'uuid'
+/*import { getUserId } from '../helpers/authHelper'*/
 import { parseUserId } from '../auth/utils'
-
+/*import { APIGatewayProxyEvent } from 'aws-lambda'*/
 
 
 const dataAccess = new DataAccess();
@@ -33,6 +34,15 @@ export async function createTodo(
         done: false,
     });
 }
+/*
+export async function updateTodo( event: APIGatewayProxyEvent){
+    
+    const todoId = event.pathParameters.todoId;
+    const userId = getUserId(event);
+    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
+    const newTodo = await dataAccess.updateTodo(userId, todoId, updatedTodo);
+       return newTodo
+}*/
 
 export async function updateTodo(
     todoId: string,
@@ -42,7 +52,7 @@ export async function updateTodo(
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    dataAccess.updateTodo(todo.todoId, updateTodoRequest);
+    dataAccess.updateTodo(todo.todoId, todo.userId, updateTodoRequest);
 }
 
 export async function deleteTodo(
@@ -54,23 +64,6 @@ export async function deleteTodo(
 
     await dataAccess.deleteTodo(todo.todoId, todo.userId);
 }
-/*
-export async function setTodoAttachmentUrl(
-    todoId: string,
-   /* attachmentUrl: string,*/  
-/*    jwtToken: string,
-): Promise<void> {
-    const userId = parseUserId(jwtToken);
-    const todo = await dataAccess.get(todoId, userId);
-    dataAccess.setTodoAttachmentUrl(todo.todoId);
-}
-*/
-/*
-export async function get(todoId: string, jwtToken: string): Promise<TodoItem> {
-    const userId = parseUserId(jwtToken)
-    return await dataAccess.get(todoId, userId)
-    }
-    */
 
 export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken)
