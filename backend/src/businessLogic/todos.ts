@@ -79,5 +79,5 @@ export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Pr
     console.log("userId:",userId)
     const todoItem = await dataAccess.get(todoId, userId)
 
-    return await dataAccess.setTodoAttachmentUrl(todoId, userId, todoItem.createdAt);
+    return await dataAccess.setTodoAttachmentUrl(todoItem.todoId, todoItem.userId);
     }
