@@ -12,7 +12,6 @@ import { parseUserId } from '../auth/utils'
 
 const dataAccess = new DataAccess();
 
-
 export async function getTodos(jwtToken) {
     const userId = parseUserId(jwtToken);
     return dataAccess.getTodoItems(userId);
@@ -25,14 +24,13 @@ export async function createTodo(
     const todoId = uuid.v4();
     const userId = parseUserId(jwtToken);
 
-    return await dataAccess.createTodo({
+    return dataAccess.createTodo({
         todoId: todoId,
         userId: userId,
         name: createTodoRequest.name,
         dueDate: createTodoRequest.dueDate,
         createdAt: new Date().toISOString(),
         done: false,
-        attachmentUrl: ``,
     });
 }
 
@@ -40,11 +38,11 @@ export async function updateTodo(
     todoId: string,
     updateTodoRequest: UpdateTodoRequest,
     jwtToken: string,
-): Promise<TodoItem> {
+): Promise<void> {
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
 
-    return dataAccess.updateTodo(todo.todoId, updateTodoRequest);
+    dataAccess.updateTodo(todo.todoId, updateTodoRequest);
 }
 
 export async function deleteTodo(
@@ -64,17 +62,22 @@ export async function setTodoAttachmentUrl(
 ): Promise<void> {
     const userId = parseUserId(jwtToken);
     const todo = await dataAccess.get(todoId, userId);
-    
     dataAccess.setTodoAttachmentUrl(todo.todoId);
 }
 */
+/*
+export async function get(todoId: string, jwtToken: string): Promise<TodoItem> {
+    const userId = parseUserId(jwtToken)
+    return await dataAccess.get(todoId, userId)
+    }
+    */
 
 export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken)
     console.log("Setting Item URL")
     console.log(todoId)
     console.log("userId:",userId)
-    /*const todoItem = await dataAccess.get(todoId, userId)*/
+    const todoItem = await dataAccess.get(todoId, userId)
 
-    return await dataAccess.setTodoAttachmentUrl(todoId, userId);
+    return await dataAccess.setTodoAttachmentUrl(todoId, userId, todoItem.createdAt);
     }
