@@ -1,4 +1,3 @@
-
 /*  */
 import * as AWS from 'aws-sdk';
 import * as AWSXRAY from 'aws-xray-sdk';
