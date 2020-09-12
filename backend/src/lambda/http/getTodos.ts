@@ -30,7 +30,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
 } catch (error) {
   if(error.statusCode == 403) {
-    console.error('The item does not has image yet.')
+    console.error('The item does not have an image yet.')
    }
 
   }
