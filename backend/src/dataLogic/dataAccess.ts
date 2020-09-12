@@ -63,7 +63,7 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
        .promise()
     return todoItem
 }
-
+/*
 async updateTodo(todoId: string,
     todoUpdate: TodoUpdate,
 ): Promise<void> {
@@ -83,6 +83,26 @@ async updateTodo(todoId: string,
         },
     }).promise()
 }
+*/
+
+async updateTodo(userId: string, todoId: string, updatedTodo: TodoUpdate) {
+    const updtedTodo = await this.docClient.update({
+        TableName: this.todosTable,
+        Key: { userId, todoId },
+        ExpressionAttributeNames: { "#N": "name" },
+        UpdateExpression: "set #N=:todoName, dueDate=:dueDate, done=:done",
+        ExpressionAttributeValues: {
+        ":todoName": updatedTodo.name,
+        ":dueDate": updatedTodo.dueDate,
+        ":done": updatedTodo.done
+         },
+         ReturnValues: "UPDATED_NEW"
+       })
+
+       .promise();
+     return { Updated: updtedTodo };
+ 
+   }
 
 async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
   logger.info('Generating upload Url')
