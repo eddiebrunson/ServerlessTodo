@@ -19,7 +19,7 @@ export class DataAccess {
       /*private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,*/
         /*This parameter is the name of the table where todos are stored*/
       private readonly todosTable = process.env.TODOS_TABLE,
-      private readonly bucketUrl = process.env.S3_BUCKET_URL
+      //private readonly bucketUrl = process.env.S3_BUCKET_URL
     ) { }
 
 async getTodoItems(userId) {
@@ -103,7 +103,7 @@ async updateTodo(userId: string, todoId: string, updatedTodo: TodoUpdate) {
      return { Updated: updtedTodo };
  
    }
-
+/*
 async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
   logger.info('Generating upload Url')
   console.log('Generating upload Url')
@@ -131,6 +131,29 @@ await this.docClient.update({
   .promise();
 return url;
 }
+*/
+
+async setTodoAttachmentUrl(todoId: string, userId: string): Promise<string> {
+   logger.info('Generating upload Url')
+   console.log('Generating upload Url')
+     const url = await this.s3.getSignedUrl('putObject', {
+         Bucket: this.bucketName,
+         Key: todoId,
+         Expires: 10000,
+     });
+     console.log(url);
+ await this.docClient.update({
+   TableName: this.todosTable,
+   Key: { userId, todoId},
+   UpdateExpression: "set attachmentUrl=:URL",
+   ExpressionAttributeValues: {
+     ":URL": url.split("?")[0]
+   },
+   ReturnValues: "UPDATED_NEW"
+   })
+   .promise();
+ return url;
+ }
 
 
 async deleteTodo(todoId: string, userId: string) {
