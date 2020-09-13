@@ -160,7 +160,8 @@ functions:
           authorizer: Auth
           method: post
           path: todos/{todoId}/attachment
-          cors: true     
+          cors: true 
+          origin: '*'    
     iamRoleStatements:
       - Effect: Allow
         Action:
