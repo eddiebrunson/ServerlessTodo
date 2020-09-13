@@ -64,7 +64,7 @@ export async function deleteTodo(
 
     await dataAccess.deleteTodo(todo.todoId, todo.userId);
 }
-
+/*
 export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken)
     console.log("Setting Item URL")
@@ -74,3 +74,15 @@ export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Pr
 
     return await dataAccess.setTodoAttachmentUrl(todoItem.todoId, todoItem.userId);
     }
+    */
+
+   export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
+       const userId = parseUserId(jwtToken)
+       console.log("Setting Item URL")
+       console.log(todoId)
+       console.log("userId:",userId)
+       //const todoItem = await dataAccess.get(todoId, userId)
+       const url = await dataAccess.setTodoAttachmentUrl(todoId, userId);
+   return url
+   }
+   
