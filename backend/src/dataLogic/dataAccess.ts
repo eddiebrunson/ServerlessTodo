@@ -16,7 +16,6 @@ export class DataAccess {
       private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
       private readonly s3 = new XAWS.S3({ signatureVersion: 'v4' }),
       private readonly bucketName = process.env.S3_BUCKET,
-      /*private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,*/
         /*This parameter is the name of the table where todos are stored*/
       private readonly todosTable = process.env.TODOS_TABLE,
       //private readonly bucketUrl = process.env.S3_BUCKET_URL
@@ -63,27 +62,6 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
        .promise()
     return todoItem
 }
-/*
-async updateTodo(todoId: string,
-    todoUpdate: TodoUpdate,
-): Promise<void> {
-   await this.docClient.update({
-        TableName: this.todosTable,
-        Key: {
-            ':todoId': todoId
-        },
-        UpdateExpression: 'set #n = :name, done =:done, dueDate = :d',
-        ExpressionAttributeValues: {
-            ':name': todoUpdate.name,
-            ':done': todoUpdate.done,
-            ':d': todoUpdate.dueDate,
-        },
-        ExpressionAttributeNames: {
-            '#n': 'name',
-        },
-    }).promise()
-}
-*/
 
 async updateTodo(userId: string, todoId: string, updatedTodo: TodoUpdate) {
     const updtedTodo = await this.docClient.update({
@@ -121,35 +99,6 @@ async updateTodo(userId: string, todoId: string, updatedTodo: TodoUpdate) {
     return updatedTodo
     
 }
-/*
-async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
-  logger.info('Generating upload Url')
-  console.log('Generating upload Url')
-  
-    const url = await this.s3.getSignedUrl('putObject', {
-        Bucket: this.bucketName,
-        Key: todoId,
-        Expires: 10000,
-    });
-    console.log(url);
-
-await this.docClient.update({
-  TableName: this.todosTable,
-  Key: { 
-      "userId":userId,
-      "todoId":todoId
-      
-  },
-  UpdateExpression: "set attachmentUrl=:URL",
-  ExpressionAttributeValues: {
-    ":URL": `${this.bucketUrl}${todoId}${imageExt}`
-  },
-  ReturnValues: "UPDATED_NEW"
-  })
-  .promise();
-return url;
-}
-*/
 
 async setTodoAttachmentUrl(todoId: string, userId: string): Promise<string> {
    logger.info('Generating upload Url')
