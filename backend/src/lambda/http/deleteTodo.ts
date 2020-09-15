@@ -27,6 +27,3 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     body: JSON.stringify(deleteTodoData),
   };
 };
-
-
-   
