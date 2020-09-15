@@ -85,4 +85,12 @@ export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Pr
        const url = await dataAccess.setTodoAttachmentUrl(todoId, userId);
    return url
    }
+
    
+export async function updateTodoUrl(updateTodo, userId: string, todoId: string): Promise<TodoItem>{
+    return await dataAccess.updateTodoUrl({
+        userId,
+        todoId,
+        attachmentUrl: updateTodo.attachmentUrl,
+    })
+}
