@@ -103,6 +103,24 @@ async updateTodo(userId: string, todoId: string, updatedTodo: TodoUpdate) {
      return { Updated: updtedTodo };
  
    }
+
+   async updateTodoUrl(updatedTodo: any): Promise<TodoItem> {
+    await this.docClient.update({
+        TableName: this.todosTable,
+        Key: { 
+            todoId: updatedTodo.todoId, 
+            userId: updatedTodo.userId },
+        ExpressionAttributeNames: {"#A": "attachmentUrl"},
+        UpdateExpression: "set #A = :attachmentUrl",
+        ExpressionAttributeValues: {
+            ":attachmentUrl": updatedTodo.attachmentUrl,
+        },
+        ReturnValues: "UPDATED_NEW"
+    }).promise()
+      
+    return updatedTodo
+    
+}
 /*
 async setTodoAttachmentUrl(todoId: string, userId: string, imageExt: string = '.png'): Promise<string> {
   logger.info('Generating upload Url')
