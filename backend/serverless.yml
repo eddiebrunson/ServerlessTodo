@@ -92,7 +92,6 @@ functions:
           method: post
           path: todos
           cors: true
-          authorizer: Auth
           reqValidatorName: RequestValidator
           documentation:
             summary: add new todo
@@ -118,7 +117,6 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
-          authorizer: Auth
           reqValidatorName: RequestValidator
           documentation:
             summary: update todo
