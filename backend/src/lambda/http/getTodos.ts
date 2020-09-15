@@ -10,6 +10,7 @@ const logger = createLogger('getTodos')
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   // TODO: Get all TODO items for a current user
   logger.info('Processing GetTodos Event: ', event)
+  try{
   const jwtToken: string = getToken(event.headers.Authorization)
   const todoItems = await getTodos(jwtToken)
   logger.info('Get todos successful')
@@ -27,4 +28,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     })
   }
 
+} catch (error) {
+  if(error.statusCode == 403) {
+    console.error('The item does not have an image yet.')
+   }
+
+  }
 }

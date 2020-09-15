@@ -14,7 +14,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const jwtToken = split[1];
 
   logger.info('Delete TODO by id',event);
-
+  
+ console.log("EVENT:", event);
  const deleteTodoData = await deleteTodo(todoId, jwtToken);
  logger.info('Item deleted successfully')
   return {
@@ -26,6 +27,3 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     body: JSON.stringify(deleteTodoData),
   };
 };
-
-
-   

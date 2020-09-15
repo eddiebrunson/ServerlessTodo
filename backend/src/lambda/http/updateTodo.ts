@@ -1,14 +1,9 @@
 import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { createLogger } from '../../utils/logger'
-/*import { getUserId } from '../../helpers/authHelper'*/
 import { updateTodo } from '../../businessLogic/todos'
 import { getToken } from '../../helpers/authHelper'
-
-
 
 const logger = createLogger('todos')
 
@@ -18,8 +13,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
-
-  /*const authHeader = event.headers.Authorization*/
+  
   const jwtToken: string = getToken(event.headers.Authorization)
 
   await updateTodo(todoId, updatedTodo, jwtToken);

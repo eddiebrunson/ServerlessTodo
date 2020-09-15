@@ -36,7 +36,7 @@ provider:
     S3_BUCKET: todo-s3-bucket-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     AUTH_0_SECRET: rb5xG5nHWUerVXgiuUjH105ZeW9OnPjAn7rO1VjXhDPbGKOgb3jyi-bTIqI0Ui87
-    
+    S3_BUCKET_URL: https://${self:provider.environment.S3_BUCKET}.s3.amazonaws.com/
 # Custom Configuration
 custom: 
   webpack:
@@ -160,7 +160,8 @@ functions:
           authorizer: Auth
           method: post
           path: todos/{todoId}/attachment
-          cors: true     
+          cors: true 
+          origin: '*'    
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -178,7 +179,7 @@ functions:
           - s3:PutObject
           - s3:GetObject
           - '*'
-        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*  
+        Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'  
       - Effect: "Allow" # xray permissions 
         Action:
           - "xray:PutTraceSegments"
@@ -193,7 +194,7 @@ resources:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST,PUT,PATCH'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,OPTIONS,POST,PUT,PATCH'"
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
@@ -241,7 +242,7 @@ resources:
                 - POST
                 - DELETE
                 - HEAD
-              MaxAge: 3000
+              MaxAge: 10000
 
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -250,9 +251,12 @@ resources:
           Id: MyPolicy
           Version: "2012-10-17"
           Statement:
-            - Sid: PublicReadForGetBucketObjects
+            - Sid: PublicReadWriteBucketPolicy
               Effect: Allow
               Principal: '*'
-              Action: 's3:GetObject'
+              Action: 
+                - s3:GetObject
+                - s3:PutObject
+                - s3:PutObjectAcl
               Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
