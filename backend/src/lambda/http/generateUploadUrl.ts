@@ -15,7 +15,7 @@ const XAWS = AWSXRay.captureAWS(AWS)
 const s3 = new XAWS.S3({
   signatureVersion: 'v4'
 })
-const bucketName = process.env.ATTACHEMENTS_S3_BUCKET
+const bucketName = process.env.S3_BUCKET
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing GenerateUploadUrl', event)
