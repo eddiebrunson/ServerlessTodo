@@ -6,9 +6,7 @@ import { DataAccess } from '../dataLogic/dataAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import * as uuid from 'uuid'
-/*import { getUserId } from '../helpers/authHelper'*/
 import { parseUserId } from '../auth/utils'
-/*import { APIGatewayProxyEvent } from 'aws-lambda'*/
 
 
 const dataAccess = new DataAccess();
@@ -34,15 +32,6 @@ export async function createTodo(
         done: false,
     });
 }
-/*
-export async function updateTodo( event: APIGatewayProxyEvent){
-    
-    const todoId = event.pathParameters.todoId;
-    const userId = getUserId(event);
-    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
-    const newTodo = await dataAccess.updateTodo(userId, todoId, updatedTodo);
-       return newTodo
-}*/
 
 export async function updateTodo(
     todoId: string,
@@ -64,25 +53,14 @@ export async function deleteTodo(
 
     await dataAccess.deleteTodo(todo.todoId, todo.userId);
 }
-/*
+
 export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken)
     console.log("Setting Item URL")
     console.log(todoId)
     console.log("userId:",userId)
-    const todoItem = await dataAccess.get(todoId, userId)
-
-    return await dataAccess.setTodoAttachmentUrl(todoItem.todoId, todoItem.userId);
-    }
-    */
-
-   export async function setTodoAttachmentUrl(todoId: string, jwtToken: string): Promise<string> {
-       const userId = parseUserId(jwtToken)
-       console.log("Setting Item URL")
-       console.log(todoId)
-       console.log("userId:",userId)
-       //const todoItem = await dataAccess.get(todoId, userId)
-       const url = await dataAccess.setTodoAttachmentUrl(todoId, userId);
+    //const todoItem = await dataAccess.get(todoId, userId)
+    const url = await dataAccess.setTodoAttachmentUrl(todoId, userId);
    return url
    }
 
